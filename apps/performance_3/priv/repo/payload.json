@@ -1,0 +1,60 @@
+{
+    "id": "12345",
+    "imp": [
+        {
+            "id": "1",
+            "banner": {
+                "w": 300,
+                "h": 250,
+                "format": [
+                    {"w": 300,
+                     "h": 250}
+                ],
+                "btype": [
+                    1,
+                    2
+                ],
+                "battr": [
+                    1,
+                    2
+                ]
+            },
+            "secure": 1,
+            "ext" : {
+              "secure": 1
+            }
+        }
+    ],
+    "site": {
+        "id": "09876",
+        "domain": "siteabcd.com",
+        "page": "http://siteabcd.com/page.htm",
+        "cat": [
+            "IAB2-1",
+            "IAB2-2"
+        ],
+        "mobile": 0,
+        "publisher": {"id": "9871"}
+    },
+    "user": {
+        "id": "DEADBEEFC0FFEQWERTY123450934",
+        "buyeruid": "123e4567-e89b-12d3-a456-426655440000"
+    },
+    "at": 2,
+    "device": {
+        "ipv6": "ff:ee::22",
+        "ua": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:8.0) Gecko/20100101 Firefox/8.0",
+        "language": "en"
+    },
+    "cur": [
+        "USD"
+    ],
+    "bcat": [
+        "50000",
+        "51000"
+    ],
+    "badv": [
+        "company1.com",
+        "company2.com"
+    ]
+}

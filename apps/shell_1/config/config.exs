@@ -1,0 +1,12 @@
+use Mix.Config
+
+config :logger,
+  backends: [
+    :console
+  ],
+  level: :error,
+  compile_time_purge_level: :error
+
+config :treasure_hunt,
+  answer1: "nc0J7OwRiPalAdtWiWDMQ7afGtSrVGh3VGYo0arAe+U4MUiRdFauW0p1/dj0eMLeHvi17SvSPyK2vSSOAarzEJTvsDatNc/3JJA9mIp7MPBba3xt593xllzMYsqXYWHvqIzPEl/YWTXEz5DI/604eECH8KEK8IoqghNRGfSh9inQ87HJX/JX7ubdEhbys+7xnSdGhufYcXdrQ3qWEqa6PCuOxEjoaYPD4oFOmKfrQ1MpdDxVmmA+z2kGgjOs+vTnDiAFtcL3iex/DcRzdhHny84PoIUs10jY9agv594xGJHVM3HYxHOMCQoiYZ1TNF2m9ZW+cpGnj2PAdGFyOQoUXQ==",
+  answer2: "h3mktPUm7+LnWpwPQJ2oaX+jnu509JUDGu8gJkQ/OoiVumQ+9SMSixMwTWs0EGZyDU5GsJgqz6nkdx1xr2TfE0pZVez2+sMzxNEoFbYHGYuAwdkXy5ny1wzxR0ok1vUbtn43YrYMTNMPnE018A4mFCwS4YJjLfUGtmVmHVcl9MOLlITp+grQuZy7KyJr3HH1h1aCJOrMI6fno8feKK9JVuFvJaXaSxVWy5AmInF5jOSj3FxDA60sUmT0ULoJI/YdCDz94CqTcSxXUMqF3GysZbZIiB8LUOYIV6JHPvQpIBB0tcHcNoyCinWlkhNH3JUajfJS146Zj1e80317KxXzNw=="

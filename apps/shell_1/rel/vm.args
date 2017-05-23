@@ -1,0 +1,25 @@
+# Node name.
+-name <%= release_name %>@127.0.0.1
+
+# Chest key configuration.
+-treasure_hunt key ${CHEST_KEY}
+
+# Node cookie, used for distribution.
+-setcookie <%= cookie %>
+
+# Lower `atom` table limit.
++t 50000
+
+# Kernel poll enabled.
++K true
+
+# Asynchronous thread pool size.
++A 100
+
+# Make Ctrl-C kill only the current shell instead of
+# bringing the whole Erlang VM down.
++Bc
+
+# Setting number of concurrent ports (e.g. sockets,
+# files etc):
+-env ERL_MAX_PORTS 1024

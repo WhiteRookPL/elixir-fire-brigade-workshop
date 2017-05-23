@@ -1,0 +1,4 @@
+%{"distillery": {:hex, :distillery, "1.4.1", "546d851bf27ae8fe0727e10e4fc4e146ad836eecee138263a60431e688044ed3", [], [], "hexpm"},
+  "elixir_make": {:hex, :elixir_make, "0.4.0", "992f38fabe705bb45821a728f20914c554b276838433349d4f2341f7a687cddf", [], [], "hexpm"},
+  "recon": {:hex, :recon, "2.3.2", "4444c879be323b1b133eec5241cb84bd3821ea194c740d75617e106be4744318", [], [], "hexpm"},
+  "segfault": {:git, "https://github.com/studzien/segfault", "cd3132c52d1eca64f85b4e9f6b2302b0416675d0", [branch: "master"]}}
