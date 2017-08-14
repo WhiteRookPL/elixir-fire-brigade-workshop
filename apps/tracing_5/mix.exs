@@ -23,7 +23,7 @@ defmodule ClientAndServer.Mixfile do
   end
 
   defp apps(env) when env == :test, do: []
-  defp apps(_), do: [ :lager, :logger ]
+  defp apps(_), do: [ :sasl, :lager, :logger ]
 
   defp deps() do
     [
