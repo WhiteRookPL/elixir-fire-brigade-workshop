@@ -22,5 +22,5 @@ defmodule Crasher.MemoryEater do
   end
 
   defp infinite_reverse([], result), do: result
-  defp infinite_reverse([ head | _ ] = input, acc), do: infinite_reverse(input, [ head | acc ])
+  defp infinite_reverse([ head | tail ], acc), do: infinite_reverse(tail, [ head | acc ])
 end

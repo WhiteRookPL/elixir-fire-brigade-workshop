@@ -14,8 +14,7 @@ defmodule Crasher.AtomEater do
   end
 
   def handle_info(:timeout, {delay, acc}) do
-    postfix = :base64.encode(:crypto.strong_rand_bytes(20))
-    new_atom = String.to_atom("new_atom_#{postfix}")
+    new_atom = String.to_existing_atom("new_atom")
 
     :erlang.send_after(delay, self(), :timeout)
 
