@@ -110,6 +110,8 @@ static ERL_NIF_TERM question(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]
   int position = (random_from_range(0, SENTENCES_SIZE) + words) % SENTENCES_SIZE;
   const char* answer = SENTENCES[position];
 
+  enif_free(question);
+
   return enif_make_tuple2(env, enif_make_atom(env, "ok"), enif_make_string(env, answer, ERL_NIF_LATIN1));
 }
 
