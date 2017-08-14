@@ -16,7 +16,7 @@ defmodule MetricsCollector.Web.Router do
     get "/page/:id", PageController, :get_by_id
     put "/pages", PageController, :create
 
-    get "/tracking", TrackingPointController, :list_all
+    get "/tracking/:limit", TrackingPointController, :list_all
     get "/tracking/point/:id", TrackingPointController, :get_by_id
     get "/tracking/for_page/:page_id", TrackingPointController, :get_by_page_id
     put "/track", TrackingPointController, :create

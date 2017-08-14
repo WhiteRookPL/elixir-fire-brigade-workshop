@@ -6,7 +6,7 @@ defmodule MetricsCollector.Web.PageController do
   alias MetricsCollector.Schema.Organization
 
   def list_all(conn, _params) do
-    pages = Repo.all(Page) |> Repo.preload(:tracking_points)
+    pages = Repo.all(Page)
     render conn, "list.json", pages: pages
   end
 

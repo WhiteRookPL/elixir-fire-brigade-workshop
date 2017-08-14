@@ -18,7 +18,7 @@ defmodule Seed do
     appliscale = Repo.insert!(Organization.changeset(%Organization{}, %{ name: "Appliscale" }))
 
     pages = for i <- 1 .. 100, into: [] do
-      page_within_organization("https://appliscale.io/page_#{i}", appliscale)
+      Repo.insert!(page_within_organization("https://appliscale.io/page_#{i}", appliscale))
     end
 
     for _ <- 1 .. 100_000 do

@@ -1,12 +1,20 @@
 defmodule MetricsCollector.Web.TrackingPointController do
   use MetricsCollector.Web, :controller
 
+  import Ecto.Query, only: [ from: 2 ]
+
   alias MetricsCollector.Schema.Repo
   alias MetricsCollector.Schema.TrackingPoint
   alias MetricsCollector.Schema.Page
 
-  def list_all(conn, _params) do
-    tracking_points = Repo.all(TrackingPoint)
+  def list_all(conn, %{ "limit" => limit }) do
+    maximum = min(limit, 1000)
+    query =
+      from p in "tracking_points",
+      limit: ^maximum,
+      select: {p.id, p.user_agent, p.content, p.page_id, p.inserted_at, p.updated_at}
+
+    tracking_points = Repo.all(query)
     render conn, "list.json", tracking_points: tracking_points
   end
 
