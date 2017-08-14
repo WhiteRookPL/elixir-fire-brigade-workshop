@@ -48,6 +48,8 @@ const char* SENTENCES[] = {
   "Very doubtful"
 };
 
+const int SENTENCES_SIZE = sizeof(SENTENCES) / sizeof(char*);
+
 static int load(ErlNifEnv* env, void **priv, ERL_NIF_TERM info)
 {
   srand(time(NULL));
@@ -105,7 +107,7 @@ static ERL_NIF_TERM question(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]
     chunk = strtok(NULL, " ");
   }
 
-  int position = random_from_range(0, words);
+  int position = (random_from_range(0, SENTENCES_SIZE) + words) % SENTENCES_SIZE;
   const char* answer = SENTENCES[position];
 
   return enif_make_tuple2(env, enif_make_atom(env, "ok"), enif_make_string(env, answer, ERL_NIF_LATIN1));
