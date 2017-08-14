@@ -8,8 +8,6 @@ defmodule SentencesAPI.Application do
       supervisor(SentencesAPI.Web.Endpoint, [])
     ]
 
-    :random.seed(:erlang.now)
-
     opts = [ strategy: :one_for_one, name: SentencesAPI.Supervisor ]
     Supervisor.start_link(children, opts)
   end

@@ -1,6 +1,8 @@
 defmodule SentencesAPI.Web.Helpers do
   def get_random_from(list) do
-    {:ok, element} = Enum.fetch(list, Kernel.trunc(:random.uniform() * length(list)))
+    :rand.seed(:exs1024, :os.timestamp())
+    {:ok, element} = Enum.fetch(list, Kernel.trunc(:rand.uniform() * length(list)))
+
     element
   end
 end
