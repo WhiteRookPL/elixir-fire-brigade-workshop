@@ -46,3 +46,63 @@ And now we will see one-two cores **utilized** in 100%:
 ```bash
 ~ $ htop
 ```
+
+## Detecting root cause
+
+And inside Erlang we can clearly see which call and process is it:
+
+```elixir
+iex(...)1> :etop.start(interval: 0.5, sort: :reductions)
+iex(...)2> :recon.proc_window(:reductions, 1, 1000)
+```
+
+Unfortunately current function is cut off there, but we can tackle it in different way:
+
+```elixir
+iex(...)1> Process.info(pid(p, i, d), :current_function)
+```
+
+We will see that responsible one is `Elixir.RandomServer.Randomizer.prepare/2`.
+
+## Fix
+
+**Tag**: `FIX_FOR_TOOLS_1`
+
+```diff
+diff --git a/apps/tools_1/lib/randomizer.ex b/apps/tools_1/lib/randomizer.ex
+index 0be45df..6fcec17 100644
+--- a/apps/tools_1/lib/randomizer.ex
++++ b/apps/tools_1/lib/randomizer.ex
+@@ -95,6 +95,6 @@ defmodule RandomServer.Randomizer do
+   end
+ 
+   defp prepare([], acc), do: acc
+-  defp prepare([ {command, result} | _tail ] = list, acc) when is_list(result), do: prepare(list, [ "#{command} = #{inspect result}" | acc ])
+-  defp prepare([ {command, result} | _tail ] = list, acc), do: prepare(list, [ "#{command} = #{result}" | acc ])
++  defp prepare([ {command, result} | tail ], acc) when is_list(result), do: prepare(tail, [ "#{command} = #{inspect result}" | acc ])
++  defp prepare([ {command, result} | tail ], acc), do: prepare(tail, [ "#{command} = #{result}" | acc ])
+ end
+\ No newline at end of file
+diff --git a/apps/tools_1/test/randomizer_test.exs b/apps/tools_1/test/randomizer_test.exs
+index 3c6c17e..5723fdd 100644
+--- a/apps/tools_1/test/randomizer_test.exs
++++ b/apps/tools_1/test/randomizer_test.exs
+@@ -33,4 +33,10 @@ defmodule RandomServer.Randomizer.Test do
+     assert {:result, shuffled} = RandomServer.Randomizer.randomize_list(original)
+     assert shuffled != original
+   end
++
++  test "that you should be able to commands history in random server" do
++    assert {:history, commands} = RandomServer.Randomizer.history()
++
++    assert length(commands) == 6
++  end
+ end
+\ No newline at end of file
+```
+
+And quick verification:
+
+```bash
+~ $ mix test --seed 0
+```

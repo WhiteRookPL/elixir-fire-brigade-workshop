@@ -33,4 +33,10 @@ defmodule RandomServer.Randomizer.Test do
     assert {:result, shuffled} = RandomServer.Randomizer.randomize_list(original)
     assert shuffled != original
   end
+
+  test "that you should be able to commands history in random server" do
+    assert {:history, commands} = RandomServer.Randomizer.history()
+
+    assert length(commands) == 6
+  end
 end

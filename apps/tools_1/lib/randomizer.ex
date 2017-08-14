@@ -95,6 +95,6 @@ defmodule RandomServer.Randomizer do
   end
 
   defp prepare([], acc), do: acc
-  defp prepare([ {command, result} | _tail ] = list, acc) when is_list(result), do: prepare(list, [ "#{command} = #{inspect result}" | acc ])
-  defp prepare([ {command, result} | _tail ] = list, acc), do: prepare(list, [ "#{command} = #{result}" | acc ])
+  defp prepare([ {command, result} | tail ], acc) when is_list(result), do: prepare(tail, [ "#{command} = #{inspect result}" | acc ])
+  defp prepare([ {command, result} | tail ], acc), do: prepare(tail, [ "#{command} = #{result}" | acc ])
 end
