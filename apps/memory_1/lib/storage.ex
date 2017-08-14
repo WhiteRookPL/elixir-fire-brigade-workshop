@@ -50,16 +50,7 @@ defmodule Audiophile.Storage do
 
   defp get_all_and_sort(table) do
     :ets.tab2list(table)
-    |> Enum.map(fn({key, value}) -> {pretty_print(key), value} end)
     |> Enum.sort(fn({_, value1}, {_, value2}) -> value1 >= value2 end)
-  end
-
-  defp pretty_print(raw) do
-    String.codepoints(raw)
-    |> Enum.filter(&String.valid?/1)
-    |> Enum.filter(fn(codepoint) -> codepoint != <<0>> end)
-    |> Enum.join("")
-    |> String.trim()
   end
 
   defp update_counter(table, key) do

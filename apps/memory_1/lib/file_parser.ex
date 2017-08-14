@@ -16,7 +16,7 @@ defmodule Audiophile.FileParser do
              _track    :: binary-size(1),
              genre     :: binary-size(1) >> = id3_tag
 
-          {:ok, %{ genre: genre_id_to_name(genre), artist: artist, year: year }}
+          {:ok, %{ genre: genre_id_to_name(genre), artist: pretty_print(artist), year: pretty_print(year) }}
         catch
           _ -> {:error, {filename, :invalid_id3_tag}}
         end
@@ -24,6 +24,14 @@ defmodule Audiophile.FileParser do
       _ ->
         {:error, {filename, :cannot_open_file}}
     end
+  end
+
+  defp pretty_print(raw) do
+    String.codepoints(raw)
+    |> Enum.filter(&String.valid?/1)
+    |> Enum.filter(fn(codepoint) -> codepoint != <<0>> end)
+    |> Enum.join("")
+    |> String.trim()
   end
 
   defp genre_id_to_name(<<0>>), do: "Blues"
