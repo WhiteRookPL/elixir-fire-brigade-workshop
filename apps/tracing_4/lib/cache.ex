@@ -30,10 +30,13 @@ defmodule CurrencyConverter.Cache do
   end
 
   def handle_cast(:refresh, table) do
+    list_of_currencies = currencies(table)
+
     :ets.delete_all_objects(table)
 
-    currencies(table)
+    list_of_currencies
     |> Enum.map(fn({from, to}) -> CurrencyConverter.API.fetch(from, to) end)
+    |> Enum.each(fn({:ok, {from, to, rate}}) -> save(table, {from, to}, rate) end)
 
     {:noreply, table}
   end
@@ -49,8 +52,8 @@ defmodule CurrencyConverter.Cache do
         rate
 
       _ ->
-        case CurrencyConverter.API.fetch(from) do
-          {:ok, {from, to, rate}} ->
+        case CurrencyConverter.API.fetch(from, to) do
+          {:ok, {^from, ^to, rate}} ->
             save(table, {from, to}, rate)
             rate
 
