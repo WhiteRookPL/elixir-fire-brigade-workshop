@@ -42,6 +42,9 @@ defmodule KV.RegistryTest do
     KV.Registry.create(registry, "shopping")
 
     assert KV.Registry.delete(registry, "shopping") == :bucket_deleted
+
+    # Do a sync to ensure the registry processed the down message
+    _ = KV.Registry.create(registry, "bogus")
     assert KV.Registry.lookup(registry, "shopping") == :error
   end
 
