@@ -7,10 +7,8 @@ defmodule PeriodicGenServerApp.Supervisor do
 
   def init(:ok) do
     children = [
-      worker(PeriodicGenServerApp.Printer, [])
-
-      # After enabling this line our PeriodicGenServer stops working:
-      # worker(PeriodicGenServerApp.Interrogator, [])
+      worker(PeriodicGenServerApp.Printer, []),
+      worker(PeriodicGenServerApp.Interrogator, [])
     ]
 
     supervise(children, strategy: :one_for_one)

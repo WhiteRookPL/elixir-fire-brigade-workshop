@@ -41,7 +41,9 @@ defmodule PeriodicGenServerApp.Behaviour do
           fn() -> module.handle_periodic_operation(additonal_state) end
         )
 
-        {:ok, {module, frequency, update_state}, frequency}
+        Process.send_after(self(), :tick, frequency)
+
+        {:ok, {module, frequency, update_state}}
 
       {:error, reason} ->
         {:stop, reason}
@@ -61,13 +63,13 @@ defmodule PeriodicGenServerApp.Behaviour do
     {:reply, result, state}
   end
 
-  def handle_info(:timeout, {module, frequency, internal_state}) do
+  def handle_info(:tick, {module, frequency, internal_state}) do
     new_state = case module.handle_periodic_operation(internal_state) do
         {:ok, changed_state} -> changed_state;
         {:error, _reason}    -> internal_state
     end
 
-    Process.send_after(self(), :timeout, frequency)
+    Process.send_after(self(), :tick, frequency)
 
     {:noreply, {module, frequency, new_state}}
   end
