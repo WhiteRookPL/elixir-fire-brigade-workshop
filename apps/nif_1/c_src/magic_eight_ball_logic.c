@@ -20,18 +20,10 @@ USE OR OTHER DEALINGS IN THE SOFTWARE. HERE BE DRAGONS. AND SEGFAULTS. I AM WOND
 IF SOMEONE ACTUALLY READING HEADERS. THIS IS NOT A DRILL. ALL YOUR BASE ARE BELONG TO US.
 */
 
-#ifdef _WIN32
-  #include <windows.h>
-#else
-  #include <unistd.h>
-#endif
-
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <erl_nif.h>
-
-#define ASSERT(exp) (reassert(exp))
 
 const char* SENTENCES[] = {
   "It is certain",
@@ -57,19 +49,6 @@ const char* SENTENCES[] = {
 };
 
 const int SENTENCES_SIZE = sizeof(SENTENCES) / sizeof(char*);
-
-static void reassert(int result) {
-  double random = (double) rand() / (double) RAND_MAX;
-  unsigned int t = (unsigned int)(((double) rand() / (double) RAND_MAX) * 1000.0);
-
-  if (random >= 0.95 && result == 1) {
-    #ifdef _WIN32
-    Sleep(t);
-    #else
-    usleep(t * 1000);
-    #endif
-  }
-}
 
 static int load(ErlNifEnv* env, void **priv, ERL_NIF_TERM info)
 {
@@ -126,7 +105,6 @@ static ERL_NIF_TERM question(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]
   while(chunk != NULL) {
     ++words;
     chunk = strtok(NULL, " ");
-    ASSERT(chunk != NULL);
   }
 
   int position = random_from_range(0, 19);
