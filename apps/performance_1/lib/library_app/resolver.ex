@@ -11,42 +11,58 @@ defmodule LibraryApp.Resolver do
     {:ok, %{ :id => id, :name => name, :surname => surname }}
   end
 
-  def all_books(_arguments, _info) do
-    authors = get_authors()
-    books = get_books()
+  def all_books(_arguments, info) do
+    child_fields = Absinthe.Resolution.project(info) |> Enum.map(&(&1.name))
 
-    final_books =
-      Enum.map(books, fn(%{ :id => book_id } = map) ->
-        mapped_authors =
-          Enum.filter(authors, fn(%{ :books => books_from_authors }) ->
-            Enum.find(books_from_authors, fn(id) -> book_id == id end) != nil
-          end)
+    books = get_books_lazily()
 
-        Map.put(map, :authors, mapped_authors)
-      end)
+    final_books = case Enum.member?(child_fields, "authors") do
+      true ->
+        authors = get_authors_lazily()
+
+        Enum.map(books, fn(%{ :id => book_id } = map) ->
+          mapped_authors =
+            Enum.filter(authors, fn(%{ :books => books_from_authors }) ->
+              Enum.find(books_from_authors, fn(id) -> book_id == id end) != nil
+            end)
+
+          Map.put(map, :authors, mapped_authors)
+        end)
+
+      false ->
+        books
+    end
 
     {:ok, final_books}
   end
 
-  def all_authors(_arguments, _info) do
-    authors = get_authors()
-    books = get_books()
+  def all_authors(_arguments, info) do
+    child_fields = Absinthe.Resolution.project(info) |> Enum.map(&(&1.name))
 
-    final_authors =
-      Enum.map(authors, fn(%{ :books => book_ids } = map) ->
-        mapped_books = Enum.map(book_ids, fn(id) ->
-          Enum.find(books, fn(%{ :id => book_id }) -> book_id == id end)
+    authors = get_authors_lazily()
+
+    final_authors = case Enum.member?(child_fields, "books") do
+      true ->
+        books = get_books_lazily()
+
+        Enum.map(authors, fn(%{ :books => book_ids } = map) ->
+          mapped_books = Enum.map(book_ids, fn(id) ->
+            Enum.find(books, fn(%{ :id => book_id }) -> book_id == id end)
+          end)
+
+          %{ map | books: mapped_books }
         end)
 
-        %{ map | books: mapped_books }
-      end)
+      false ->
+        authors
+    end
 
     {:ok, final_authors}
   end
 
   def books_by_author(%{ :author => author }, _info) do
-    authors = get_authors()
-    books = get_books()
+    authors = get_authors_lazily()
+    books = get_books_lazily()
 
     {author_name, author_surname} = separate_name_and_surname(author)
     author = Enum.find(authors, fn(%{ :name => name, :surname => surname }) -> name == author_name and surname == author_surname end)
@@ -65,8 +81,8 @@ defmodule LibraryApp.Resolver do
   end
 
   def authors_by_title(%{ :title => book_title }, _info) do
-    authors = get_authors()
-    books = get_books()
+    authors = get_authors_lazily()
+    books = get_books_lazily()
 
     book = Enum.find(books, fn(%{ :title => title }) -> book_title == title end)
 
@@ -115,8 +131,8 @@ defmodule LibraryApp.Resolver do
   def associate_book_with_author(_arguments, %{ :author => name_and_surname, :title => book_title }, _info) do
     {author_name, author_surname} = separate_name_and_surname(name_and_surname)
 
-    author = Enum.find(get_authors(),  fn(%{ :name => name, :surname => surname }) -> name == author_name and surname == author_surname end)
-    book = Enum.find(get_books(), fn(%{ :title => title }) -> book_title == title end)
+    author = Enum.find(get_authors_lazily(),  fn(%{ :name => name, :surname => surname }) -> name == author_name and surname == author_surname end)
+    book = Enum.find(get_books_lazily(), fn(%{ :title => title }) -> book_title == title end)
 
     case {author, book} do
       {author, book} when author != nil and book != nil ->
@@ -134,6 +150,26 @@ defmodule LibraryApp.Resolver do
 
       _ ->
         {:error, :no_such_author_or_book}
+    end
+  end
+
+  def get_books_lazily() do
+    case :ets.lookup(LibraryApp.Cache, :books) do
+      [ {_, content} ] -> content
+      []               ->
+        books = get_books()
+        :ets.insert(LibraryApp.Cache, {:books, books})
+        books
+    end
+  end
+
+  def get_authors_lazily() do
+    case :ets.lookup(LibraryApp.Cache, :authors) do
+      [ {_, content} ] -> content
+      []               ->
+        authors = get_authors()
+        :ets.insert(LibraryApp.Cache, {:authors, authors})
+        authors
     end
   end
 
