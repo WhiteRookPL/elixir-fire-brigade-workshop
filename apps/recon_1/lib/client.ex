@@ -1,8 +1,13 @@
 defmodule RedisClone.Client do
   def command(string) do
     socket = open(6379)
+
     send_data(socket, [string,  ?\r, ?\n])
-    String.trim(recv(socket))
+    response = String.trim(recv(socket))
+
+    :gen_tcp.close(socket)
+
+    response
   end
 
   # Private API.
