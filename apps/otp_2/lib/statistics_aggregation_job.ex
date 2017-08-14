@@ -48,7 +48,7 @@ defmodule Chatterboxes.Statistics.AggregationJob do
 
     :proc_lib.init_ack(parent, {:ok, self()})
 
-    send(self(), :agregation)
+    send(self(), :aggregation)
     loop(parent, opts, state)
   end
 
@@ -64,7 +64,7 @@ defmodule Chatterboxes.Statistics.AggregationJob do
 
         loop(parent, new_opts, %{state | result: aggregate})
 
-      :final_agregation_step ->
+      :final_aggregation_step ->
         new_opts = :sys.handle_debug(opts, &write_debug/3, __MODULE__, {:in, :final_aggregation_step})
 
         send(self(), :return_result)

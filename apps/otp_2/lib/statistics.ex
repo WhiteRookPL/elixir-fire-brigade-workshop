@@ -22,7 +22,7 @@ defmodule Chatterboxes.Statistics do
 
     seed = 1
 
-    Process.send_after(self(), :tick, @frequency_in_ms)
+    Process.send_after(self(), :aggregate, @frequency_in_ms)
 
     {:ok, {pending, jobs, refs, seed}}
   end
