@@ -23,7 +23,7 @@ defmodule World.Mixfile do
   end
 
   defp apps(env) when env == :test, do: [ :runtime_tools ]
-  defp apps(_), do: [ :runtime_tools, :lager, :logger ]
+  defp apps(_), do: [ :runtime_tools, :lager, :logger, :sasl ]
 
   defp deps() do
     [

@@ -7,7 +7,7 @@ defmodule World.Supervisor do
 
   def init(:ok) do
     children = [
-      supervisor(World.Animals.Supervisor, [World.Dodos.Supervisor], id: World.Dodos.Supervisor, restart: :transient),
+      supervisor(World.Animals.Supervisor, [World.Dodos.Supervisor], id: World.Dodos.Supervisor, restart: :permanent),
       supervisor(World.Animals.Supervisor, [World.Cockroaches.Supervisor], id: World.Cockroaches.Supervisor, restart: :permanent)
     ]
 
