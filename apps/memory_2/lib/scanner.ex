@@ -32,7 +32,7 @@ defmodule Audiophile.Scanner do
   def handle_call({:scan, path}, _from, history) do
     files = Path.wildcard("#{path}/**/*.mp3")
 
-    processed_tags =
+    processed_files =
       files
       |> Flow.from_enumerable(stages: 8, max_demand: 1)
       |> Flow.map(fn(filename) -> {filename, Audiophile.FileParser.extract_duration(filename)} end)
@@ -43,14 +43,11 @@ defmodule Audiophile.Scanner do
       |> Flow.map(&store_and_collect_id3_tag/1)
       |> Enum.to_list()
 
-    cleanup()
-
-    {:reply, :scanned, [ {path, length(processed_tags)} | history ]}
+    {:reply, :scanned, [ {path, length(processed_files)} | history ]}
   end
 
-  defp store_and_collect_id3_tag({{:ok, %{ :artist => artist, :id3 => id3 }}, {:ok, time}}) do
+  defp store_and_collect_id3_tag({{:ok, %{ :artist => artist }}, {:ok, time}}) do
     Audiophile.Storage.update(artist, time)
-    id3
   end
 
   defp maybe_print_error({{:ok, _}, _} = value), do: value
@@ -61,14 +58,4 @@ defmodule Audiophile.Scanner do
 
   defp file_description(1), do: "file"
   defp file_description(_), do: "files"
-
-  defp cleanup() do
-    :erts_debug.set_internal_state(:available_internal_state, true)
-    :erts_debug.set_internal_state(:test_long_gc_sleep, 100)
-
-    :erlang.garbage_collect()
-
-    :erts_debug.set_internal_state(:test_long_gc_sleep, 0)
-    :erts_debug.set_internal_state(:available_internal_state, false)
-  end
 end

@@ -18,7 +18,7 @@ defmodule Audiophile.FileParser do
              _track    :: binary-size(1),
              _genre    :: binary-size(1) >> = id3_tag
 
-          {:ok, %{ artist: pretty_print(artist), id3: id3_tag }}
+          {:ok, %{ artist: pretty_print(artist) }}
         catch
           _ -> {:error, {filename, :invalid_id3_tag}}
         end
@@ -35,24 +35,14 @@ defmodule Audiophile.FileParser do
       {^port, {:data, seconds}} ->
         Port.close(port)
 
-        receive do
-          {^port, :closed} ->
-            case Integer.parse(seconds) do
-              {seconds, _} -> {:ok, seconds}
-              :error       -> {:error, :duration_not_available}
-            end
-        after
-          @default_port_timeout -> {:error, :port_not_responding}
+        case Integer.parse(seconds) do
+          {seconds, _} -> {:ok, seconds}
+          :error       -> {:error, :duration_not_available}
         end
     after
       @default_port_timeout ->
         Port.close(port)
-
-        receive do
-          {^port, :closed} -> {:error, :port_not_responding}
-        after
-          @default_port_timeout -> {:error, :port_not_responding}
-        end
+        {:error, :port_not_responding}
     end
   end
 
