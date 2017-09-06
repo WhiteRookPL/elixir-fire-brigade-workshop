@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
+
 set -x
 echo "Starting 10 nodes with 'TreasureHunt' application..."
 
 N=1
 
-if hash shuf 2>/dev/null; then
-  SHUFFLED=$(seq 10 | shuf)
-elif hash gshuf 2>/dev/null; then
-  SHUFFLED=$(seq 10 | gshuf)
-else
-  SHUFFLED=$(seq 10)
-fi
-
-for I in SHUFFLED; do
+for I in $(seq 10); do
   REPLACE_OS_VARS=true CHEST_KEY="${I}" bash -c "_build/prod/rel/treasure_hunt_node_${N}/bin/treasure_hunt_node_${N} start" >/dev/null 2>&1
   N=$((N+1))
 done
