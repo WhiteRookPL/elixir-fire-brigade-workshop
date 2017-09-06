@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
 echo "Starting 10 nodes with 'TreasureHunt' application..."
 
 N=1
